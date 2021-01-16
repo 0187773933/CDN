@@ -190,9 +190,9 @@ function _get_id_from_base_10(base_10) {
 // gas_constant = gas_constant.mul(t_mol );
 // gas_constant = gas_constant.mul("8.314");
 // let gas_constant = Qty("8.314J/degK*mol")
-// console.log( gas_constant );
-// console.log( gas_constant.numerator );
-// console.log( gas_constant.denominator );
+// this.log( gas_constant );
+// this.log( gas_constant.numerator );
+// this.log( gas_constant.denominator );
 
 function _build_metric_unit_selector_html_string( equations_global_index , base10 , class_name ) {
 	let html_string = `<select onchange="ABC_EQUATION_WRAPPERS[ ${equations_global_index} ].metricUnitsUpdate(this)" class="${class_name}">`;
@@ -210,15 +210,18 @@ function _build_metric_unit_selector_html_string( equations_global_index , base1
 
 class ABCEquationWrapper {
 	constructor( options ) {
-		console.log( "constructor()" );
+		console.log( "ABCEquationWrapper.constructor()" );
 		if ( !renderMathInElement ) { alert( "we can't find katex.renderMathInElement()" ); return; }
 		this.options = options;
 		this.build();
 		this.calculate();
 		this.render();
 	}
+	log( message ) {
+		console.log( `ABCEquationWrapper[ ${this.options.element.id} ] === ${message}` );
+	}
 	build() {
-		console.log( "build()" );
+		this.log( "build()" );
 
 		// 0.)
 		this.operator_elements = [ ...this.options.element.querySelectorAll( "div.operator" ) ];
@@ -239,7 +242,7 @@ class ABCEquationWrapper {
 		if ( !this.operator_elements ) { return "no operators"; }
 		this.operators = [];
 		for ( let i = 0; i < this.operator_elements.length; ++i ) {
-			// console.log( this.operator_elements[ i ] );
+			// this.log( this.operator_elements[ i ] );
 
 			// a.) Parse Operator Attributes
 			let operator_name = this.operator_elements[ i ].getAttribute( "name" );
@@ -262,7 +265,7 @@ class ABCEquationWrapper {
 			let input_slider_step = parseFloat( input_element.getAttribute( "slider_step" ) );
 			let output_default_base10 = parseInt( input_element.getAttribute( "default_base10" ) );
 
-			// console.log(
+			// this.log(
 			// 	input_units_name ,
 			// 	input_default_value ,
 			// 	input_default_base10 ,
@@ -297,7 +300,7 @@ class ABCEquationWrapper {
 
 		// 5.) Force Update Range Slider ???
 		let range_slider = this.options.element.querySelector( "input.range_slider" );
-		// console.log( range_slider );
+		// this.log( range_slider );
 		range_slider.value = range_slider.getAttribute( "defaultValue" );
 		range_slider.step = range_slider.getAttribute( "step" );
 
@@ -305,7 +308,7 @@ class ABCEquationWrapper {
 
 	}
 	calculate() {
-		console.log( "calculate()" );
+		this.log( "calculate()" );
 		// Update The Global Equation Objects State to Match Inputs
 		// All we did in sliderInputUpdate() and textInputUpdate() was sync all updates across similar inputs
 		for ( let i = 0; i < this.operator_elements.length; ++i ) {
@@ -320,7 +323,7 @@ class ABCEquationWrapper {
 			let adjustment_latex_string = "";
 			let adjustment_string = "";
 			if ( input_units.base_10 !== output_units.base_10 ) {
-				console.log( "Ouput Base10 is Different than Input Base10" );
+				this.log( "Ouput Base10 is Different than Input Base10" );
 				adjusted_value = ( ( input_value * ( 1 * 10**( input_units.base_10 - output_units.base_10 ) ) ) );
 				adjustment_latex_string = String.raw` * \left(\ 1 * 10^{\left(\ \left(\ ${input_units.base_10}\ \right) - \left(\ ${output_units.base_10}\ \right) \ \right)}\ \right)`;
 				adjustment_string = ` * ( 1 * 10^( ( ${input_units.base_10} ) - ( ${output_units.base_10} ) ) )`;
@@ -345,36 +348,36 @@ class ABCEquationWrapper {
 			};
 		}
 		let function_name = `${this.options.element.id}CalculationFunction`;
-		console.log( `Calling: ${function_name}()` );
+		this.log( `Calling: ${function_name}()` );
 		eval( function_name ).call( this );
 	}
 	render() {
-		console.log( "render()" );
-		// console.log( this.result );
-		// console.log( this.equation_live_string_latex );
-		// console.log( this.equation_live_string );
+		this.log( "render()" );
+		// this.log( this.result );
+		// this.log( this.equation_live_string_latex );
+		// this.log( this.equation_live_string );
 		this.result_katex_element.innerText = this.equation_live_string_latex;
 		this.result_string_element.innerHTML = `<center>${this.equation_live_string}</center>`;
 		renderMathInElement( this.result_katex_element , { strict: "ignore" } );
 	}
 	metricUnitsUpdate( select ) {
-		console.log( select );
+		this.log( select );
 		this.update();
 	}
 	textInputUpdate( input ) {
-		// console.log( input.value );
+		// this.log( input.value );
 		// Update Slider Value
 		input.nextSibling.value = input.value;
 		this.update();
 	}
 	sliderInputUpdate( slider ) {
-		// console.log( slider.value );
+		// this.log( slider.value );
 		// Update Text Input Value
 		slider.previousSibling.value = slider.value;
 		this.update();
 	}
 	update() {
-		console.log( "update()" );
+		this.log( "update()" );
 		this.calculate();
 		this.render();
 	}
