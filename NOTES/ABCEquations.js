@@ -229,9 +229,7 @@ class ABCEquationWrapper {
 
 		// TO ADD
 		// Options Table or some options area where you select to display "show pilot string" , "show inputs" , "show slider" , "show text input" , "calculate different outputBase10 scale" , "show final value"
-		// THen we just need to build pilot strings, and I think its ready
 		// no copy and paste ...
-		// we have to clean up both current equations
 
 		// 1.) Start Building HTML Input/Output Table HTML String
 		this.io_table_element = document.createElement( "table" );
