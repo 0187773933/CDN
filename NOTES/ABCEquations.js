@@ -229,6 +229,11 @@ class ABCEquationWrapper {
 
 		// TO ADD
 		// no copy and paste ...
+		// Add Randomize Inputs Option
+
+		// BUGS
+		// If OutputBase10 is different on operators that interact with shared unit types, it does not adjust correctly I think the difference between bases
+		// It assumes same unit types like milliVolts and milliVolts are both milli. There is no check to make sure both are actually milli. They could be yattaVolts set from options ?????
 
 		// 1.) Start Building HTML Input/Output Table HTML String
 		this.io_table_element = document.createElement( "table" );
