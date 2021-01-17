@@ -1,170 +1,170 @@
 let ABC_EQUATION_WRAPPERS = [];
 
 const MetricUnits = [
-  {
-	id: 1,
-	value: "yotta",
-	label: "yotta",
-	symbol: "Y",
-	base_10: 24,
-  },
-  {
-	id: 2,
-	value: "zetta",
-	label: "zetta",
-	symbol: "Z",
-	base_10: 21,
-  },
-  {
-	id: 3,
-	value: "exa",
-	label: "exa",
-	symbol: "E",
-	base_10: 18,
-  },
-  {
-	id: 4,
-	value: "peta",
-	label: "peta",
-	symbol: "P",
-	base_10: 15,
-  },
-  {
-	id: 5,
-	value: "tera",
-	label: "tera",
-	symbol: "T",
-	base_10: 12,
-  },
-  {
-	id: 6,
-	value: "giga",
-	label: "giga",
-	symbol: "G",
-	base_10: 9,
-  },
-  {
-	id: 7,
-	value: "mega",
-	label: "mega",
-	symbol: "M",
-	base_10: 6,
-  },
-  {
-	id: 8,
-	value: "kilo",
-	label: "kilo",
-	symbol: "k",
-	base_10: 3,
-  },
-  {
-	id: 9,
-	value: "hecto",
-	label: "hecto",
-	symbol: "h",
-	base_10: 2,
-  },
-  {
-	id: 10,
-	value: "deca",
-	label: "deca",
-	symbol: "da",
-	base_10: 1,
-  },
-  {
-	id: 11,
-	value: "one",
-	label: "",
-	symbol: "1",
-	base_10: 0,
-  },
-  {
-	id: 12,
-	value: "deci",
-	label: "deci",
-	symbol: "d",
-	base_10: -1,
-  },
-  {
-	id: 13,
-	value: "centi",
-	label: "centi",
-	symbol: "c",
-	base_10: -2,
-  },
-  {
-	id: 14,
-	value: "milli",
-	label: "milli",
-	symbol: "m",
-	base_10: -3,
-  },
-  {
-	id: 15,
-	value: "micro",
-	label: "micro",
-	symbol: "µ",
-	base_10: -6,
-  },
-  {
-	id: 16,
-	value: "nano",
-	label: "nano",
-	symbol: "n",
-	base_10: -9,
-  },
-  {
-	id: 17,
-	value: "pico",
-	label: "pico",
-	symbol: "p",
-	base_10: -12,
-  },
-  {
-	id: 18,
-	value: "femto",
-	label: "femto",
-	symbol: "f",
-	base_10: -15,
-  },
-  {
-	id: 19,
-	value: "atto",
-	label: "atto",
-	symbol: "a",
-	base_10: -18,
-  },
-  {
-	id: 20,
-	value: "zepto",
-	label: "zepto",
-	symbol: "z",
-	base_10: -21,
-  },
-  {
-	id: 21,
-	value: "yocto",
-	label: "yocto",
-	symbol: "y",
-	base_10: -24,
-  },
+	{
+		id: 1,
+		value: "yotta",
+		label: "yotta",
+		symbol: "Y",
+		base_10: 24,
+	} ,
+	{
+		id: 2,
+		value: "zetta",
+		label: "zetta",
+		symbol: "Z",
+		base_10: 21,
+	} ,
+	{
+		id: 3,
+		value: "exa",
+		label: "exa",
+		symbol: "E",
+		base_10: 18,
+	} ,
+	{
+		id: 4,
+		value: "peta",
+		label: "peta",
+		symbol: "P",
+		base_10: 15,
+	} ,
+	{
+		id: 5,
+		value: "tera",
+		label: "tera",
+		symbol: "T",
+		base_10: 12,
+	} ,
+	{
+		id: 6,
+		value: "giga",
+		label: "giga",
+		symbol: "G",
+		base_10: 9,
+	} ,
+	{
+		id: 7,
+		value: "mega",
+		label: "mega",
+		symbol: "M",
+		base_10: 6,
+	}	,
+	{
+		id: 8,
+		value: "kilo",
+		label: "kilo",
+		symbol: "k",
+		base_10: 3,
+	} ,
+	{
+		id: 9,
+		value: "hecto",
+		label: "hecto",
+		symbol: "h",
+		base_10: 2,
+	} ,
+	{
+		id: 10,
+		value: "deca",
+		label: "deca",
+		symbol: "da",
+		base_10: 1,
+	} ,
+	{
+		id: 11,
+		value: "one",
+		label: "",
+		symbol: "1",
+		base_10: 0,
+	} ,
+	{
+		id: 12,
+		value: "deci",
+		label: "deci",
+		symbol: "d",
+		base_10: -1,
+	} ,
+	{
+		id: 13,
+		value: "centi",
+		label: "centi",
+		symbol: "c",
+		base_10: -2,
+	} ,
+	{
+		id: 14,
+		value: "milli",
+		label: "milli",
+		symbol: "m",
+		base_10: -3,
+	} ,
+	{
+		id: 15,
+		value: "micro",
+		label: "micro",
+		symbol: "µ",
+		base_10: -6,
+	} ,
+	{
+		id: 16,
+		value: "nano",
+		label: "nano",
+		symbol: "n",
+		base_10: -9,
+	}	,
+	{
+		id: 17,
+		value: "pico",
+		label: "pico",
+		symbol: "p",
+		base_10: -12,
+	}	,
+	{
+		id: 18,
+		value: "femto",
+		label: "femto",
+		symbol: "f",
+		base_10: -15,
+	}	,
+	{
+		id: 19,
+		value: "atto",
+		label: "atto",
+		symbol: "a",
+		base_10: -18,
+	}	,
+	{
+		id: 20,
+		value: "zepto",
+		label: "zepto",
+		symbol: "z",
+		base_10: -21,
+	}	,
+	{
+		id: 21,
+		value: "yocto",
+		label: "yocto",
+		symbol: "y",
+		base_10: -24,
+	}	,
 ];
 
-function _get_id_from_value_name(value_name) {
-  for (let i = 0; i < MetricUnits.length; ++i) {
-	if (MetricUnits[i].value === value_name) {
-	  return i;
+function _get_id_from_value_name( value_name ) {
+	for ( let i = 0; i < MetricUnits.length; ++i ) {
+		if ( MetricUnits[i].value === value_name ) {
+			return i;
+		}
 	}
-  }
   return false;
 }
-function _get_id_from_base_10(base_10) {
-  for (let i = 0; i < MetricUnits.length; ++i) {
-	if (MetricUnits[i].base_10 === base_10) {
-	  return i;
+function _get_id_from_base_10( base_10 ) {
+	for ( let i = 0; i < MetricUnits.length; ++i ) {
+		if ( MetricUnits[i].base_10 === base_10 ) {
+			return i;
+		}
 	}
-  }
-  return false;
+	return false;
 }
 
 // https://github.com/ben-ng/convert-units
@@ -228,7 +228,6 @@ class ABCEquationWrapper {
 		let our_position_in_global_equations = ABC_EQUATION_WRAPPERS.length;
 
 		// TO ADD
-		// Options Table or some options area where you select to display "show pilot string" , "show inputs" , "show slider" , "show text input" , "calculate different outputBase10 scale" , "show final value"
 		// no copy and paste ...
 
 		// 1.) Start Building HTML Input/Output Table HTML String
@@ -286,14 +285,59 @@ class ABCEquationWrapper {
 
 		}
 
+		// var myButton = document.getElementById('myButton');
+
+		// //hide
+		// myButton.style.display = 'none';
+
+		// //show
+		// myButton.style.display = 'block';
+
+		// <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+		// <label for="vehicle1"> I have a bike</label><br>
+		// <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
+		// <label for="vehicle2"> I have a car</label><br>
+		// <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
+		// <label for="vehicle3"> I have a boat</label><br><br>
+		// <input type="submit" value="Submit"></input>
+
+		// Add Options Panel
+		// Options Table or some options area where you select to display "show pilot string" , "show inputs" , "show slider" , "show text input" , "calculate different outputBase10 scale" , "show final value"
+
+		// First Create Options Button , that toggles showing/hiding all of the checkbox options
+		this.options_show_hide_element = document.createElement( "div" );
+		this.options_show_hide_element.innerHTML = `<input type="checkbox" class="checkbox" name="show_options" value="1" onchange="ABC_EQUATION_WRAPPERS[ ${our_position_in_global_equations} ].optionsCheckBoxUpdate(this)"><label for="show_pilot_strings">&nbsp;Options&nbsp;</label>`;
+		this.options.element.appendChild( this.options_show_hide_element );
+
+		// Next Create Options-Group Div That Spans with inputs will go into
+		this.options_panel_element = document.createElement( "div" );
+		this.options_panel_element.style["display"] = "none";
+		this.options_panel_element.className = "options-group";
+
+		// Create Show Pilot/Simple String Checkbox Option
+		this.show_pilot_string_checkbox_element = document.createElement( "span" );
+		this.show_pilot_string_checkbox_element.innerHTML = `<input type="checkbox" class="checkbox" name="show_pilot_strings" checked="1" value="1" onchange="ABC_EQUATION_WRAPPERS[ ${our_position_in_global_equations} ].showPilotStringsCheckboxUpdate(this)"><label for="show_pilot_strings">&nbsp;Show Pilot Strings&nbsp;</label>`;
+		this.options_panel_element.appendChild( this.show_pilot_string_checkbox_element );
+		this.options.element.appendChild( this.options_panel_element );
+
+		// Create Show Input/Output Table Checkbox Option
+		this.show_iotable_checkbox_element = document.createElement( "span" );
+		this.show_iotable_checkbox_element.innerHTML = `<input type="checkbox" class="checkbox" name="show_iotable" checked="1" value="1" onchange="ABC_EQUATION_WRAPPERS[ ${our_position_in_global_equations} ].showIOTableCheckboxUpdate(this)"><label for="show_iotable">&nbsp;Show IO Table&nbsp;</label>`;
+		this.options_panel_element.appendChild( this.show_iotable_checkbox_element );
+		this.options.element.appendChild( this.options_panel_element );
+
+
+
 		this.options.element.appendChild( this.io_table_element );
 
 		// 3.) Build Live Latex Template String Placeholder Element
 		this.result_katex_element = document.createElement( "p" );
+		this.result_katex_element.className = "latex-string";
 		this.options.element.appendChild( this.result_katex_element );
 
 		// 4.) Build Live Pilot/Simple Template String Placeholder Element
 		this.result_string_element = document.createElement( "p" );
+		this.result_string_element.className = "pilot-string";
 		this.options.element.appendChild( this.result_string_element );
 
 		// 5.) Force Update Range Slider ???
@@ -357,6 +401,30 @@ class ABCEquationWrapper {
 		this.result_katex_element.innerText = this.equation_live_string_latex;
 		this.result_string_element.innerHTML = `<center>${this.equation_live_string}</center>`;
 		renderMathInElement( this.result_katex_element , { strict: "ignore" } );
+	}
+	showIOTableCheckboxUpdate( checkbox ) {
+		this.log( `Show IO Table Enabled === ${checkbox.checked}` );
+		if ( checkbox.checked ) {
+			this.io_table_element.style.display = "block";
+		} else {
+			this.io_table_element.style.display = "none";
+		}
+	}
+	showPilotStringsCheckboxUpdate( checkbox ) {
+		this.log( `Show Pilot Strings Enabled === ${checkbox.checked}` );
+		if ( checkbox.checked ) {
+			this.result_string_element.style.display = "block";
+		} else {
+			this.result_string_element.style.display = "none";
+		}
+	}
+	optionsCheckBoxUpdate( checkbox ) {
+		this.log( `Options Enabled === ${checkbox.checked}` );
+		if ( checkbox.checked ) {
+			this.options_panel_element.style.display = "block";
+		} else {
+			this.options_panel_element.style.display = "none";
+		}
 	}
 	metricUnitsUpdate( select ) {
 		this.log( select );
