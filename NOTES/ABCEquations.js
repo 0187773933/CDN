@@ -228,8 +228,9 @@ class ABCEquationWrapper {
 		let our_position_in_global_equations = ABC_EQUATION_WRAPPERS.length;
 
 		// TO ADD
-		// no copy and paste ...
 		// Add Randomize Inputs Option
+		// Add Show "Raw Latex" option
+		// Add Show Copy "Raw Latex" Option
 
 		// BUGS
 		// If OutputBase10 is different on operators that interact with shared unit types, it does not adjust correctly I think the difference between bases
@@ -345,6 +346,11 @@ class ABCEquationWrapper {
 		this.result_string_element.className = "pilot-string";
 		this.options.element.appendChild( this.result_string_element );
 
+		// Add Copy To Clipboard Button For Pilot Strings
+		this.result_string_copy_to_clipboard_element = document.createElement( "div" );
+		this.result_string_copy_to_clipboard_element.innerHTML = `<center><button class="copyToClipboard" onclick="ABC_EQUATION_WRAPPERS[ ${our_position_in_global_equations} ].copyTextToClipboard(this)">Copy to Clipboard</button><center>`;
+		this.options.element.appendChild( this.result_string_copy_to_clipboard_element );
+
 		// 5.) Force Update Range Slider ???
 		let range_slider = this.options.element.querySelector( "input.range_slider" );
 		// this.log( range_slider );
@@ -400,12 +406,36 @@ class ABCEquationWrapper {
 	}
 	render() {
 		this.log( "render()" );
-		// this.log( this.result );
-		// this.log( this.equation_live_string_latex );
-		// this.log( this.equation_live_string );
 		this.result_katex_element.innerText = this.equation_live_string_latex;
 		this.result_string_element.innerHTML = `<center>${this.equation_live_string}</center>`;
 		renderMathInElement( this.result_katex_element , { strict: "ignore" } );
+	}
+	// view-source:https://www.unicodepedia.com/unicode/mathematical-operators/22c5/dot-operator/#91
+	copyTextToClipboard( button ) {
+		this.log( "copyTextToClipboard()" );
+		let textArea = document.createElement( "textarea" );
+		textArea.style.position = "fixed";
+		textArea.style.top = 0;
+		textArea.style.left = 0;
+		textArea.style.width = "2em";
+		textArea.style.height = "2em";
+		textArea.style.padding = 0;
+		textArea.style.border = "none";
+		textArea.style.outline = "none";
+		textArea.style.boxShadow = "none";
+		textArea.style.background = "transparent";
+		textArea.value = this.equation_live_string;
+		document.body.appendChild( textArea );
+		textArea.focus();
+		textArea.select();
+		try {
+			let successful = document.execCommand( "copy" );
+			let msg = successful ? "successful" : "unsuccessful";
+			this.log( "Copying text command was " + msg );
+		} catch ( err ) {
+			this.log( "Unable to Copy" );
+		}
+		textArea.parentNode.removeChild( textArea );
 	}
 	showIOTableCheckboxUpdate( checkbox ) {
 		this.log( `Show IO Table Enabled === ${checkbox.checked}` );
