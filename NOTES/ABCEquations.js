@@ -244,7 +244,6 @@ class ABCEquationWrapper {
 		// 2.) Parse Defined Operator HTML and Add to Input/Ouput Table as Text Input Fields with Metric Unit Selectors
 		this.operator_elements = [ ...this.options.element.querySelectorAll( "div.operator" ) ];
 		if ( !this.operator_elements ) { return "no operators"; }
-		this.operators = [];
 		for ( let i = 0; i < this.operator_elements.length; ++i ) {
 			// this.log( this.operator_elements[ i ] );
 
@@ -331,10 +330,13 @@ class ABCEquationWrapper {
 		this.show_iotable_checkbox_element = document.createElement( "span" );
 		this.show_iotable_checkbox_element.innerHTML = `<input type="checkbox" class="checkbox" name="show_iotable" checked="1" value="1" onchange="ABC_EQUATION_WRAPPERS[ ${our_position_in_global_equations} ].showIOTableCheckboxUpdate(this)"><label for="show_iotable">&nbsp;Show IO Table&nbsp;</label>`;
 		this.options_panel_element.appendChild( this.show_iotable_checkbox_element );
+
+		// Create Randomize Inputs Button
+		this.randomize_inputs_button_element = document.createElement( "span" );
+		this.randomize_inputs_button_element.innerHTML = `<button onclick="ABC_EQUATION_WRAPPERS[ ${our_position_in_global_equations} ].randomizeInputs(this)">Randomize Inputs</button>`;
+		this.options_panel_element.appendChild( this.randomize_inputs_button_element );
+
 		this.options.element.appendChild( this.options_panel_element );
-
-
-
 		this.options.element.appendChild( this.io_table_element );
 
 		// 3.) Build Live Latex Template String Placeholder Element
@@ -437,6 +439,19 @@ class ABCEquationWrapper {
 			this.log( "Unable to Copy" );
 		}
 		textArea.parentNode.removeChild( textArea );
+	}
+	randomizeInputs( button ) {
+		this.log( "randomizeInputs()" );
+		for ( let i = 0; i < this.operator_elements.length; ++i ) {
+			let input_element = this.operator_elements[ i ].querySelector( "div.input" );
+			let min = parseFloat( input_element.getAttribute( "slider_min" ) );
+			let max = parseFloat( input_element.getAttribute( "slider_max" ) );
+			let random_number = Math.random() * ( max - min ) + min ;
+			let range_slider = this.options.element.querySelectorAll( "input.range_slider" )[ i ];
+			range_slider.value = random_number;
+			range_slider.previousSibling.value = random_number
+		}
+		this.update();
 	}
 	showIOTableCheckboxUpdate( checkbox ) {
 		this.log( `Show IO Table Enabled === ${checkbox.checked}` );
