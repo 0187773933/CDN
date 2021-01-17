@@ -166,6 +166,46 @@ function _get_id_from_base_10( base_10 ) {
 	}
 	return false;
 }
+function _build_metric_unit_selector_html_string( equations_global_index , base10 , class_name ) {
+	let html_string = `<select onchange="ABC_EQUATION_WRAPPERS[ ${equations_global_index} ].metricUnitsUpdate(this)" class="${class_name}">`;
+	let default_index = _get_id_from_base_10( base10 );
+	for ( let i = 0; i < MetricUnits.length; ++i ) {
+		if ( i === default_index ) {
+			html_string += `<option selected="selected" value="${MetricUnits[i]["id"]}">${MetricUnits[i]["label"]} (${MetricUnits[i]["symbol"]}) (${MetricUnits[i]["base_10"]})</option>`;
+		} else {
+			html_string += `<option value="${MetricUnits[i]["id"]}">${MetricUnits[i]["label"]} (${MetricUnits[i]["symbol"]}) (${MetricUnits[i]["base_10"]})</option>`;
+		}
+	}
+	html_string += "</select>"
+	return html_string;
+}
+// function _load_script_library( url ) {
+// 	let script = document.createElement( "script" );
+// 	script.id = Math.random().toString(36).substring(7);
+// 	script.src = url;
+// 	script.async = false;
+// 	script.defer = false;
+// 	head = document.head || document.getElementsByTagName( "head" )[ 0 ];
+// 	//document.head.appendChild( script );
+// 	head.insertBefore( script , head.firstChild );
+// 	console.log( script );
+// }
+
+function _load_script_library( url ) {
+	return new Promise( function( resolve , reject ) {
+		try {
+			let script = document.createElement( "script" );
+			script.id = Math.random().toString( 36 ).substring( 7 );
+			script.src = url;
+			script.async = false;
+			script.defer = false;
+			script.addEventListener( "load" , resolve );
+			document.head.appendChild( script );
+			console.log( script );
+		}
+		catch( error ) { console.log( error ); reject( error ); return; }
+	});
+}
 
 // https://github.com/ben-ng/convert-units
 // https://github.com/gentooboontoo/js-quantities
@@ -194,19 +234,6 @@ function _get_id_from_base_10( base_10 ) {
 // this.log( gas_constant.numerator );
 // this.log( gas_constant.denominator );
 
-function _build_metric_unit_selector_html_string( equations_global_index , base10 , class_name ) {
-	let html_string = `<select onchange="ABC_EQUATION_WRAPPERS[ ${equations_global_index} ].metricUnitsUpdate(this)" class="${class_name}">`;
-	let default_index = _get_id_from_base_10( base10 );
-	for ( let i = 0; i < MetricUnits.length; ++i ) {
-		if ( i === default_index ) {
-			html_string += `<option selected="selected" value="${MetricUnits[i]["id"]}">${MetricUnits[i]["label"]} (${MetricUnits[i]["symbol"]}) (${MetricUnits[i]["base_10"]})</option>`;
-		} else {
-			html_string += `<option value="${MetricUnits[i]["id"]}">${MetricUnits[i]["label"]} (${MetricUnits[i]["symbol"]}) (${MetricUnits[i]["base_10"]})</option>`;
-		}
-	}
-	html_string += "</select>"
-	return html_string;
-}
 
 class ABCEquationWrapper {
 	constructor( options ) {
@@ -228,7 +255,6 @@ class ABCEquationWrapper {
 		let our_position_in_global_equations = ABC_EQUATION_WRAPPERS.length;
 
 		// TO ADD
-		// Add Randomize Inputs Option
 		// Add Show "Raw Latex" option
 		// Add Show Copy "Raw Latex" Option
 
@@ -239,7 +265,7 @@ class ABCEquationWrapper {
 
 		// 1.) Start Building HTML Input/Output Table HTML String
 		this.io_table_element = document.createElement( "table" );
-		let io_table_html_string = "<tr><th>Name</th><th>Input Value</th><th>Input Base10</th><th>Unit Name</th><th>Output Base10</th><th>Final Value</th></tr>";
+		let io_table_html_string = "<tr><th>Name</th><th>Input Value</th><th>Input Base10</th><th>Input Unit Type</th><th>Output Base10</th><th>Final Value</th></tr>";
 
 		// 2.) Parse Defined Operator HTML and Add to Input/Ouput Table as Text Input Fields with Metric Unit Selectors
 		this.operator_elements = [ ...this.options.element.querySelectorAll( "div.operator" ) ];
@@ -267,13 +293,17 @@ class ABCEquationWrapper {
 			let input_slider_max = parseFloat( input_element.getAttribute( "slider_max" ) );
 			let input_slider_step = parseFloat( input_element.getAttribute( "slider_step" ) );
 			let output_default_base10 = parseInt( input_element.getAttribute( "default_base10" ) );
-
-			// this.log(
-			// 	input_units_name ,
-			// 	input_default_value ,
-			// 	input_default_base10 ,
-			// 	output_default_base10
-			// );
+			this.operator_elements[ i ].meta = {
+				input_units_name: input_units_name ,
+				input_default_value: input_default_value ,
+				input_default_base10: input_default_base10 ,
+				input_slider_min: input_slider_min ,
+				input_slider_max: input_slider_max ,
+				input_slider_step: input_slider_step ,
+				output_default_base10: output_default_base10 ,
+				quantity: Qty( `${input_default_value} ${ input_units_name }` ) , // sending 1 to 2nd arg of pluralize = unpluralize
+			}
+			this.log( this.operator_elements[ i ].meta );
 
 			// c.) Build Input and Output Metric Selector Elements
 			let input_metric_selector_html_string = _build_metric_unit_selector_html_string( our_position_in_global_equations , input_default_base10 , "input" );
@@ -290,22 +320,6 @@ class ABCEquationWrapper {
 			this.io_table_element.innerHTML = io_table_html_string;
 
 		}
-
-		// var myButton = document.getElementById('myButton');
-
-		// //hide
-		// myButton.style.display = 'none';
-
-		// //show
-		// myButton.style.display = 'block';
-
-		// <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-		// <label for="vehicle1"> I have a bike</label><br>
-		// <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
-		// <label for="vehicle2"> I have a car</label><br>
-		// <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
-		// <label for="vehicle3"> I have a boat</label><br><br>
-		// <input type="submit" value="Submit"></input>
 
 		// Add Options Panel
 		// Options Table or some options area where you select to display "show pilot string" , "show inputs" , "show slider" , "show text input" , "calculate different outputBase10 scale" , "show final value"
@@ -363,6 +377,12 @@ class ABCEquationWrapper {
 		//this.options.element.insertBefore( this.io_table_element , this.options.element.children[ this.options.element.children.length - 3 ] );
 
 	}
+// https://github.com/gentooboontoo/js-quantities
+//let volt = Qty("1 volt")
+// volt._units: "Volts"
+//let t = Qty("1 Siemens")
+//let t = Qty("1 microSiemens")
+//t.to("yottaSiemens")
 	calculate() {
 		this.log( "calculate()" );
 		// Update The Global Equation Objects State to Match Inputs
@@ -374,15 +394,17 @@ class ABCEquationWrapper {
 			let input_value = this.options.element.querySelectorAll( "input.text_input" )[ i ].value || this.operator_elements[i].querySelector( "div.input" ).getAttribute( "default_value" );
 			let input_units = MetricUnits[ this.options.element.querySelectorAll( "select.input" )[ i ].selectedIndex ];
 			let input_unit_name = this.operator_elements[i].querySelector( "div.input" ).getAttribute( "unit_name" );
+			let input_quantity = Qty( `${input_value} ${input_units.label}${input_unit_name}` );
 			let output_units = MetricUnits[ this.options.element.querySelectorAll( "select.output" )[ i ].selectedIndex ];
+			let output_quantity = input_quantity.to( `${output_units.label}${input_unit_name}` );
 			let adjusted_value = input_value;
 			let adjustment_latex_string = "";
 			let adjustment_string = "";
 			if ( input_units.base_10 !== output_units.base_10 ) {
 				this.log( "Ouput Base10 is Different than Input Base10" );
 				adjusted_value = ( ( input_value * ( 1 * 10**( input_units.base_10 - output_units.base_10 ) ) ) );
-				adjustment_latex_string = String.raw` * \left(\ 1 * 10^{\left(\ \left(\ ${input_units.base_10}\ \right) - \left(\ ${output_units.base_10}\ \right) \ \right)}\ \right)`;
-				adjustment_string = ` * ( 1 * 10^( ( ${input_units.base_10} ) - ( ${output_units.base_10} ) ) )`;
+				adjustment_latex_string = String.raw` * \left(\ 10^{\left(\ \left(\ ${input_units.base_10}\ \right) - \left(\ ${output_units.base_10}\ \right) \ \right)}\ \right)`;
+				adjustment_string = ` * ( 10^( ( ${input_units.base_10} ) - ( ${output_units.base_10} ) ) )`;
 			}
 			let final_latex_string = String.raw`${input_value}${adjustment_latex_string}\ ${output_units.label}\ ${input_unit_name}`;
 			let final_string = `${input_value}${adjustment_string} ${output_units.label} ${input_unit_name}`;
@@ -392,6 +414,7 @@ class ABCEquationWrapper {
 					value: input_value ,
 					units: input_units ,
 					unit_name: input_unit_name ,
+					quantity: input_quantity ,
 				} ,
 				output: {
 					units: output_units ,
@@ -400,6 +423,7 @@ class ABCEquationWrapper {
 					adjustment_string: adjustment_string ,
 					final_latex_string: final_latex_string ,
 					final_string: final_string ,
+					quantity: output_quantity ,
 				}
 			};
 		}
@@ -502,8 +526,10 @@ class ABCEquationWrapper {
 	}
 }
 
-function ABCEquationsHookDIVS() {
+async function ABCEquationsHookDIVS() {
 	console.log( "ABCEquationsHookDIVS()" );
+	try{ Qty("1 Volt") } catch( e ){ console.log( "Loading Quantity Manager Library" ); await _load_script_library( "https://39363.org/CDN/NOTES/quantities.js" ); }
+	try{ pluralize( "Volts" , 1 ) } catch( e ){ console.log( "Loading Pluralize Library" ); await _load_script_library( "https://39363.org/CDN/NOTES/pluralize.min.js" ); }
 	let equations = document.querySelectorAll( "div.abc-equation" );
 	for ( let i = 0; i < equations.length; ++i ) {
 		let wrapper = new ABCEquationWrapper({
