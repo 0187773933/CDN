@@ -235,6 +235,7 @@ class ABCEquationWrapper {
 		// BUGS
 		// If OutputBase10 is different on operators that interact with shared unit types, it does not adjust correctly I think the difference between bases
 		// It assumes same unit types like milliVolts and milliVolts are both milli. There is no check to make sure both are actually milli. They could be yattaVolts set from options ?????
+		// just use the unit manager library to convert stuff
 
 		// 1.) Start Building HTML Input/Output Table HTML String
 		this.io_table_element = document.createElement( "table" );
@@ -449,8 +450,10 @@ class ABCEquationWrapper {
 		this.log( `Show Pilot Strings Enabled === ${checkbox.checked}` );
 		if ( checkbox.checked ) {
 			this.result_string_element.style.display = "block";
+			this.result_string_copy_to_clipboard_element.style.display = "block";
 		} else {
 			this.result_string_element.style.display = "none";
+			this.result_string_copy_to_clipboard_element.style.display = "none";
 		}
 	}
 	optionsCheckBoxUpdate( checkbox ) {
