@@ -190,7 +190,6 @@ function _build_metric_unit_selector_html_string( equations_global_index , base1
 // 	head.insertBefore( script , head.firstChild );
 // 	console.log( script );
 // }
-
 function _load_script_library( url ) {
 	return new Promise( function( resolve , reject ) {
 		try {
@@ -255,6 +254,8 @@ class ABCEquationWrapper {
 		let our_position_in_global_equations = ABC_EQUATION_WRAPPERS.length;
 
 		// TO ADD
+		// Need the ability to add/clone n, multiples of the same operator type
+		// 		can be used in series approximation , anything
 		// Add Show "Raw Latex" option
 		// Add Show Copy "Raw Latex" Option
 
@@ -377,12 +378,6 @@ class ABCEquationWrapper {
 		//this.options.element.insertBefore( this.io_table_element , this.options.element.children[ this.options.element.children.length - 3 ] );
 
 	}
-// https://github.com/gentooboontoo/js-quantities
-//let volt = Qty("1 volt")
-// volt._units: "Volts"
-//let t = Qty("1 Siemens")
-//let t = Qty("1 microSiemens")
-//t.to("yottaSiemens")
 	calculate() {
 		this.log( "calculate()" );
 		// Update The Global Equation Objects State to Match Inputs
