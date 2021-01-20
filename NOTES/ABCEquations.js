@@ -389,9 +389,13 @@ class ABCEquationWrapper {
 			let input_value = this.options.element.querySelectorAll( "input.text_input" )[ i ].value || this.operator_elements[i].querySelector( "div.input" ).getAttribute( "default_value" );
 			let input_units = MetricUnits[ this.options.element.querySelectorAll( "select.input" )[ i ].selectedIndex ];
 			let input_unit_name = this.operator_elements[i].querySelector( "div.input" ).getAttribute( "unit_name" );
-			let input_quantity = Qty( `${input_value} ${input_units.label}${input_unit_name}` );
+			let input_quantity;
+			try { input_quantity = Qty( `${input_value} ${input_units.label}${input_unit_name}` ); }
+			catch( e ) { input_quantity = Qty( `${input_value}${input_unit_name}` ); }
 			let output_units = MetricUnits[ this.options.element.querySelectorAll( "select.output" )[ i ].selectedIndex ];
-			let output_quantity = input_quantity.to( `${output_units.label}${input_unit_name}` );
+			let output_quantity;
+			try { output_quantity = input_quantity.to( `${output_units.label}${input_unit_name}` ); }
+			catch( e ) { output_quantity = input_quantity; }
 			let adjusted_value = input_value;
 			let adjustment_latex_string = "";
 			let adjustment_string = "";
@@ -465,7 +469,7 @@ class ABCEquationWrapper {
 			let input_element = this.operator_elements[ i ].querySelector( "div.input" );
 			let min = parseFloat( input_element.getAttribute( "slider_min" ) );
 			let max = parseFloat( input_element.getAttribute( "slider_max" ) );
-			let random_number = Math.random() * ( max - min ) + min ;
+			let random_number = Math.floor( Math.random() * ( max - min ) + min  );
 			let range_slider = this.options.element.querySelectorAll( "input.range_slider" )[ i ];
 			range_slider.value = random_number;
 			range_slider.previousSibling.value = random_number
