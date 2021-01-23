@@ -258,6 +258,10 @@ class ABCEquationWrapper {
 		// 		can be used in series approximation , anything
 		// Add Show "Raw Latex" option
 		// Add Show Copy "Raw Latex" Option
+		// Add Desmos Support ?? You have to email them for an api key? wtf
+		// https://www.desmos.com/api/v1.5/docs/index.html#document-api-keys
+		// https://www.desmos.com/api/v1.5/docs/index.html#document-quickstart
+		// https://www.desmos.com/api/v1.5/docs/index.html#document-manipulating-expressions
 
 		// BUGS
 		// If OutputBase10 is different on operators that interact with shared unit types, it does not adjust correctly I think the difference between bases
