@@ -390,7 +390,7 @@ class ABCEquationWrapper {
 
 			// Capture Current State of Operator
 			let operator_name = this.operator_elements[i].getAttribute( "name" )
-			let input_value = this.options.element.querySelectorAll( "input.text_input" )[ i ].value || this.operator_elements[i].querySelector( "div.input" ).getAttribute( "default_value" );
+			let input_value = parseFloat( this.options.element.querySelectorAll( "input.text_input" )[ i ].value || this.operator_elements[i].querySelector( "div.input" ).getAttribute( "default_value" ) );
 			let input_units = MetricUnits[ this.options.element.querySelectorAll( "select.input" )[ i ].selectedIndex ];
 			let input_unit_name = this.operator_elements[i].querySelector( "div.input" ).getAttribute( "unit_name" );
 			let input_quantity;
