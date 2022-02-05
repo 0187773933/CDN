@@ -20,7 +20,13 @@ function start_interactive_typing() {
 		let text_x_offset_factor = window.text_x_offset_factor;
 		let text_y_offset_factor = window.text_y_offset_factor;
 		let next_challenge_url = window.next_challenge_url;
-
+		let randomize_order = true;
+		let auto_advance = true;
+		let any_position = false;
+		let drawn_correct_indexes = {};
+		if ( typeof window.randomize_order != "undefined" ) { randomize_order = window.randomize_order; }
+		if ( typeof window.auto_advance != "undefined" ) { auto_advance = window.auto_advance; }
+		if ( typeof window.any_position != "undefined" ) { any_position = window.any_position; }
 
 		let width_scale_percentage = ( image_scale_percentage / 100 );
 		let height_scale_percentage = ( image_scale_percentage / 100 );
@@ -132,11 +138,14 @@ function start_interactive_typing() {
 			for ( let i = 0; i < areas.length; ++i ) {
 				let translated_rec_coordinates = translate_raw_rectangle_coordinates_to_ordered( areas[ i ].getAttribute( "coords" ) );
 				let id = areas[ i ].alt.toLowerCase().replace( /\s+/g , '-' );
+				let font = areas[ i ].getAttribute( "font" );
+				if ( font === null ) { font = text_font; }
 				rectangle_objects.push({
 					area: areas[ i ] ,
 					id: id ,
-					translated_coordinates: translated_rec_coordinates
-				})
+					translated_coordinates: translated_rec_coordinates ,
+					font: font
+				});
 				// draw_rectangle( ...translated_rec_coordinates );
 			}
 			// console.log( rectangle_objects );
@@ -162,9 +171,14 @@ function start_interactive_typing() {
 						s = Math.sin(s) * 10000; return s - Math.floor(s);
 					};
 				};
-				let random1 = Math.seed(new Date().getTime());
-				let random2 = Math.seed(random1());
-				Math.random = Math.seed(random2());
+				let random_seed = Math.seed( new Date().getTime() );
+				let min_seed_iterations = 3;
+				let max_seed_iterations = 10;
+				let random_number_of_seeds = Math.floor( min_seed_iterations + Math.random() * ( max_seed_iterations + 1 - min_seed_iterations ) );
+				for ( let i = 1; i < random_number_of_seeds; ++i ) {
+					random_seed = Math.seed( random_seed() );
+				}
+				Math.random = Math.seed( random_seed() );
 				const newArr = array.slice();
 				for (let i = newArr.length - 1; i > 0; i--) {
 					const rand = Math.floor(Math.random() * (i + 1));
@@ -175,7 +189,8 @@ function start_interactive_typing() {
 
 			// https://www.w3schools.com/graphics/canvas_text.asp
 			function add_text_to_area( rectangle_object ) {
-				context.font = text_font;
+				// context.font = text_font;
+				context.font = rectangle_object.font;
 				context.fillStyle = text_color;
 				context.textAlign = "center";
 				let x = rectangle_object.translated_coordinates[ 0 ] + ( rectangle_object.translated_coordinates[ 2 ] / text_x_offset_factor );
@@ -184,40 +199,154 @@ function start_interactive_typing() {
 			}
 
 			// Randomize Items
-			areas = shuffleArray( [ ...areas ] );
-			rectangle_objects = shuffleArray( rectangle_objects );
+			if ( randomize_order ) {
+				areas = shuffleArray( [ ...areas ] );
+				rectangle_objects = shuffleArray( rectangle_objects );
+			}
 
 			// Now we just have to highlight boxes/areas in order , and verify typed answer is right before moving on
 			let answer_input_element = document.getElementById( "input-answer" );
 			let active_rectangle_index = 0;
 			let total_rectangles = rectangle_objects.length;
+			let time_now = new Date().getTime();
+			let time_last_control = new Date().getTime();
+			let time_last_control_z = new Date().getTime();
+			let control_cooloff = 1.0;
+			let control_z_cooloff = 1.0;
 			draw_rectangle( ...rectangle_objects[ active_rectangle_index ].translated_coordinates , unanswered_color );
 			let hint_button_element = document.getElementById( "hint-button" );
 			let hint_area_element = document.getElementById( "hint-area" );
 			hint_button_element.addEventListener( "click" , function( event ) {
 				hint_area_element.innerText = rectangle_objects[ active_rectangle_index ].area.alt;
+				answer_input_element.focus();
+				answer_input_element.select();
 			});
 			answer_input_element.addEventListener( "keyup" , function( event ) {
 				let input_text = this.value.toLowerCase();
+				if ( active_rectangle_index in drawn_correct_indexes ) {
+					console.log( "already answered from anywhere position" );
+					while( ( active_rectangle_index in drawn_correct_indexes ) === true ) {
+						active_rectangle_index += 1;
+						console.log( active_rectangle_index );
+					}
+				}
 				let correct_value = rectangle_objects[ active_rectangle_index ].area.alt.toLowerCase();
 				if ( input_text === correct_value ) {
 					this.value = "";
 					hint_area_element.innerText = "";
 					draw_rectangle( ...rectangle_objects[ active_rectangle_index ].translated_coordinates , answered_color );
 					add_text_to_area( rectangle_objects[ active_rectangle_index ] );
+					drawn_correct_indexes[ active_rectangle_index ] = 1;
+					console.log( drawn_correct_indexes );
 					active_rectangle_index += 1;
+					if ( active_rectangle_index in drawn_correct_indexes ) {
+						console.log( "already answered from anywhere position" );
+						while( ( active_rectangle_index in drawn_correct_indexes ) === true ) {
+							active_rectangle_index += 1;
+							console.log( active_rectangle_index );
+						}
+					}
 					if ( active_rectangle_index === total_rectangles ) {
 						if ( next_challenge_url ) {
-							window.location.href = next_challenge_url;
+							if ( auto_advance ) {
+								window.location.href = next_challenge_url;
+							}
 						}
 					} else {
 						draw_rectangle( ...rectangle_objects[ active_rectangle_index ].translated_coordinates , unanswered_color );
 					}
+				} else {
+					//if ( any_position === true ) {
+						let potential_correct_values = rectangle_objects.map( ( x ) => { return x.area.alt.toLowerCase() } );
+						let pcv = {};
+						potential_correct_values.forEach( ( x , i ) => { pcv[ x ] = i } );
+						if ( input_text in pcv ) {
+							if ( pcv[ input_text ] in drawn_correct_indexes ) { return; }
+							console.log( "correct answer for anywhere position" );
+							this.value = "";
+							hint_area_element.innerText = "";
+							active_index = pcv[ input_text ]
+							console.log( active_index );
+							draw_rectangle( ...rectangle_objects[ active_index ].translated_coordinates , answered_color );
+							add_text_to_area( rectangle_objects[ active_index ] );
+							drawn_correct_indexes[ active_index ] = 1;
+							console.log( drawn_correct_indexes );
+							if ( active_index === total_rectangles ) {
+								if ( next_challenge_url ) {
+									if ( auto_advance ) {
+										window.location.href = next_challenge_url;
+									}
+								}
+							}
+						}
+					//}
 				}
 			});
+			let control_z_listener = false;
+			function setup_control_z_listener() {
+				answer_input_element.addEventListener( "keydown" , function( event ) {
+					if ( event.key !== "Control" ) { return; }
+					if ( event.ctrlKey !== true ) { return; }
+					time_last_control = new Date().getTime();
+					answer_input_element.addEventListener( "keyup" , function( event_two ) {
+						if ( event_two.keyCode !== 90 ) { return; } // Control + Z
+						time_now = new Date().getTime();
+						let time_since_last_control_z = ( ( time_now - time_last_control_z ) / 1000 );
+						if ( time_since_last_control_z < control_z_cooloff ) { return; }
+						let time_since_last_control = ( ( time_now - time_last_control ) / 1000 );
+						if ( time_since_last_control > control_cooloff ) { return; }
+						console.log( `Control + Z === ${time_now} === ${time_since_last_control_z}` );
+						time_last_control_z = time_now;
+						this.value = "";
+						hint_area_element.innerText = "";
+						draw_rectangle( ...rectangle_objects[ active_rectangle_index ].translated_coordinates , answered_color );
+						add_text_to_area( rectangle_objects[ active_rectangle_index ] );
+						drawn_correct_indexes[ active_rectangle_index ] = 1;
+						console.log( drawn_correct_indexes );
+						active_rectangle_index += 1;
+						if ( active_rectangle_index in drawn_correct_indexes ) {
+							console.log( "already answered from anywhere position" );
+							while( ( active_rectangle_index in drawn_correct_indexes ) === true ) {
+								active_rectangle_index += 1;
+								console.log( active_rectangle_index );
+							}
+						}
+						if ( active_rectangle_index === total_rectangles ) {
+							if ( next_challenge_url ) {
+								if ( auto_advance ) {
+									//window.location.href = next_challenge_url;
+								}
+							}
+						} else {
+							draw_rectangle( ...rectangle_objects[ active_rectangle_index ].translated_coordinates , unanswered_color );
+						}
+						return;
+					});
+				});
+			}
+			setup_control_z_listener();
 
+			answer_input_element.addEventListener( "keydown" , function( event ) {
+				// console.log( "here" );
+				// console.log( event.ctrlKey , event.key , event.keyCode );
+				if ( event.key === "Control" && event.keyCode === 17 ) {
+					// console.log( "there" );
+					hint_area_element.innerText = rectangle_objects[ active_rectangle_index ].area.alt;
+					answer_input_element.focus();
+					answer_input_element.select();
+				}
+			});
+			answer_input_element.focus();
+			answer_input_element.setSelectionRange( answer_input_element.value.length , answer_input_element.value.length , "forward" );
 		}
-
+		if ( next_challenge_url ) {
+			let hint_button = document.getElementById( "hint-button" );
+			let next_button_html = `&nbsp;<button class="btn btn-outline-secondary" type="button" id="next-button">Next</button>`;
+			hint_button.insertAdjacentHTML( "afterend" , next_button_html );
+			document.getElementById( "next-button" ).addEventListener( "click" , function () {
+				window.location.href = next_challenge_url;
+			});
+		}
 	}
 	init();
 }
