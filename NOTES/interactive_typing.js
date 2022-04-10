@@ -22,7 +22,7 @@ function start_interactive_typing() {
 		let next_challenge_url = window.next_challenge_url;
 		let randomize_order = true;
 		let auto_advance = true;
-		let any_position = false;
+		let any_position = true;
 		let drawn_correct_indexes = {};
 		if ( typeof window.randomize_order != "undefined" ) { randomize_order = window.randomize_order; }
 		if ( typeof window.auto_advance != "undefined" ) { auto_advance = window.auto_advance; }
@@ -256,7 +256,7 @@ function start_interactive_typing() {
 						draw_rectangle( ...rectangle_objects[ active_rectangle_index ].translated_coordinates , unanswered_color );
 					}
 				} else {
-					//if ( any_position === true ) {
+					if ( any_position === true ) {
 						let potential_correct_values = rectangle_objects.map( ( x ) => { return x.area.alt.toLowerCase() } );
 						let pcv = {};
 						potential_correct_values.forEach( ( x , i ) => { pcv[ x ] = i } );
@@ -279,7 +279,7 @@ function start_interactive_typing() {
 								}
 							}
 						}
-					//}
+					}
 				}
 			});
 			let control_z_listener = false;
