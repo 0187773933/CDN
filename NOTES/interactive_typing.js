@@ -347,6 +347,19 @@ function start_interactive_typing() {
 				window.location.href = next_challenge_url;
 			});
 		}
+
+		// addon - show all answers button
+		// let answer_span_element = $( "span:contains('Answer')" );
+		// console.log( answer_span_element );
+		// let show_all_button_html = `<button class="btn btn-outline-secondary" type="button" id="show-all-button">Show All</button>`;
+		// $( answer_span_element )[ 0 ].insertAdjacentHTML( "beforebegin" , show_all_button_html );
+		// document.getElementById( "show-all-button" ).addEventListener( "click" , function () {
+		// 	console.log( "we should be showing all answers" );
+		// 	for ( let i = 0; i < rectangle_objects.length; ++i ) {
+		// 		draw_rectangle( ...rectangle_objects[ i ].translated_coordinates , answered_color );
+		// 		add_text_to_area( rectangle_objects[ i ] );
+		// 	}
+		// });
 	}
 	init();
 }
